@@ -2,7 +2,7 @@
 
 Stop Claude from touching files you didn't ask it to touch.
 
-[![GitHub stars](https://img.shields.io/github/stars/grxkun/scope-guard?style=flat)](https://github.com/grxkun/scope-guard/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![X](https://img.shields.io/badge/X-@grxkun-black)](https://x.com/grxkun)
+[![GitHub stars](https://img.shields.io/github/stars/grxkun/scope-guard?style=flat)](https://github.com/grxkun/scope-guard/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![X](https://img.shields.io/badge/X-@grxxxkun-black)](https://x.com/grxxxkun)
 
 A portable Claude Code skill that forces a **Scope Declaration** before any edit — a confirmed list of exactly which files will be touched, what changes, and what stays alone. Anything spotted outside scope goes to a **Notices log**, not a silent fix.
 
