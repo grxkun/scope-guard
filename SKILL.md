@@ -1,7 +1,7 @@
 ---
 name: scope-guard
-description: Prevent Claude from touching files or systems beyond what the task actually requires. Use this skill when fixing bugs, making changes, refactoring, or editing anything — especially when you want Claude to stay focused on the specific problem. Triggers on: "fix this", "change this", "update", "refactor", "edit", "clean up", "adjust", or any request to modify existing code or files.
-version: 1.0.0
+description: "Prevent Claude from touching files or systems beyond what the task actually requires. Use this skill when fixing bugs, making changes, refactoring, or editing anything — especially when you want Claude to stay focused on the specific problem. Triggers on: fix this, change this, update, refactor, edit, clean up, adjust, or any request to modify existing code or files."
+version: 1.1.0
 author: grxkun
 license: MIT
 ---
@@ -16,6 +16,18 @@ Your job is to do exactly what was asked. Nothing more.
 
 ---
 
+## Step 0 — Trivial Edit Shortcut
+
+If the change is **a single line in a single file** with no behavioral side effects (typo, off-by-one, wrong string literal, missing semicolon), you may use a **compact declaration** and proceed without waiting for confirmation:
+
+```
+SCOPE (trivial): src/components/Button.tsx:84 → fix undefined ref
+```
+
+If there is any doubt about whether the edit is trivial, use the full declaration.
+
+---
+
 ## Step 1 — Scope Declaration (REQUIRED before any edit)
 
 Before writing or editing any file, output this block:
@@ -26,7 +38,9 @@ SCOPE DECLARATION
 Task:        [one sentence: what was actually asked]
 Files I will touch:
   - [filepath] → [what I will change and why]
-Files I will NOT touch (even if I see problems):
+Files I will delete:
+  - [filepath] → [why this file should be removed]
+Files I will NOT touch (max 5 — remainder goes to Notices):
   - [filepath] → [problem I noticed but will leave alone]
 Blast radius: [S / M / L]
   S = 1-2 files, no shared logic
@@ -38,6 +52,8 @@ Proceed? (yes / adjust scope)
 
 **Wait for confirmation before making any edits.**
 
+Any affirmative response counts as confirmation: "yes", "yeah", "do it", "go ahead", "lgtm", "👍", "k", or similar.
+
 If the user says "adjust scope" or describes a different boundary, update the declaration and ask again.
 
 ---
@@ -46,11 +62,22 @@ If the user says "adjust scope" or describes a different boundary, update the de
 
 Once confirmed:
 
-- Touch **only** the files listed in the declaration
-- If you discover mid-edit that you need to touch an unlisted file, **stop and re-declare scope** before proceeding
-- Do not rename, reorganize, or reformat files that weren't listed
-- Do not add imports, dependencies, or abstractions that weren't asked for
-- Do not fix bugs you notice in adjacent files — log them instead (see Step 3)
+* Touch **only** the files listed in the declaration
+* If you discover mid-edit that you need to touch an unlisted file, **pause** — do not discard work. Append the new file to the existing declaration and ask for confirmation on the addition only:
+
+```
+SCOPE ADDITION
+─────────────────
+Adding to scope:
+  - [filepath] → [what I need to change and why]
+Updated blast radius: [S / M / L]
+─────────────────
+OK to include? (yes / skip it)
+```
+
+* Do not rename, reorganize, or reformat files that weren't listed
+* Do not add imports, dependencies, or abstractions that weren't asked for
+* Do not fix bugs you notice in adjacent files — log them instead (see Step 3)
 
 ---
 
@@ -69,25 +96,30 @@ Run /scope-guard to address any of these.
 
 This is where "I noticed while I was in there" energy goes. Noticed, not fixed.
 
+Items that overflowed the "Files I will NOT touch" cap (max 5) also go here.
+
 ---
 
 ## Scope Size Rules
 
 **S (Small) — default target**
-- 1-2 files
-- No shared utilities touched
-- No imports added to unrelated files
-- The user should be able to read the entire diff in 30 seconds
+
+* 1-2 files
+* No shared utilities touched
+* No imports added to unrelated files
+* The user should be able to read the entire diff in 30 seconds
 
 **M (Medium) — explain why**
-- 3-5 files
-- If you're touching shared logic, name every consumer of that logic
-- If M scope was not asked for, surface it in the declaration and let the user decide
+
+* 3-5 files
+* If you're touching shared logic, name every consumer of that logic
+* If M scope was not asked for, surface it in the declaration and let the user decide
 
 **L (Large) — require explicit user confirmation**
-- 6+ files, or any change to a core abstraction
-- State: "This is a large-scope change. Are you sure you want to proceed?"
-- Do not default to L. If you think L is needed, propose an S or M version first.
+
+* 6+ files, or any change to a core abstraction
+* State: "This is a large-scope change. Are you sure you want to proceed?"
+* Do not default to L. If you think L is needed, propose an S or M version first.
 
 ---
 
@@ -101,6 +133,7 @@ This is where "I noticed while I was in there" energy goes. Noticed, not fixed.
 | "Fix this related bug I noticed" | Don't. List it in Notices. |
 | "Refactor this to be more readable" | Only if explicitly asked. |
 | "Update the tests to match" | Yes — but list the test files in your Scope Declaration. |
+| "Remove this dead code while I'm here" | Don't. List it in Notices. |
 
 ---
 
