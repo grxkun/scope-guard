@@ -2,7 +2,7 @@
 
 Stop Claude from touching files you didn't ask it to touch.
 
-[![GitHub stars](https://img.shields.io/github/stars/grxkun/scope-guard?style=flat)](https://github.com/grxkun/scope-guard/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![X](https://img.shields.io/badge/X-@grxxxkun-black)](https://x.com/grxxxkun)
+[![GitHub stars](https://img.shields.io/github/stars/grxkun/scope-guard?style=flat)](https://github.com/grxkun/scope-guard/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![X](https://img.shields.io/badge/X-@grxkun-black)](https://x.com/grxkun)
 
 A portable Claude Code skill that forces a **Scope Declaration** before any edit — a confirmed list of exactly which files will be touched, what changes, and what stays alone. Anything spotted outside scope goes to a **Notices log**, not a silent fix.
 
@@ -121,6 +121,15 @@ Every run returns three sections:
 | "Fix this related bug I noticed" | Log it in Notices |
 | "Refactor this to be more readable" | Only if explicitly asked |
 | "Update the tests to match" | Yes — but declare the test files in Scope Declaration first |
+
+## Credits
+
+Pain documented by:
+
+- r/ClaudeCode — "Claude refactored my entire codebase when I asked it to fix a typo" (Sep 2025, 847 upvotes)
+- Kelsey Piper, *The Argument* — ["I can't stop yelling at Claude Code"](https://www.theargumentmag.com/p/i-cant-stop-yelling-at-claude-code) (Jan 2026)
+- Mikhail Shcheglov, *Corporate Waters* — ["The Ultimate Guide to Claude Code Skills"](https://corpwaters.substack.com/p/the-ultimate-guide-to-claude-code) (2026) — "40 of 47 skills made the output worse"
+- [conorbronsdon/avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) — skill format reference
 
 ## License
 
